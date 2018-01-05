@@ -20,8 +20,8 @@ function [out_profile,out_errors] = Inertial_navigation_NED(in_profile,...
 %     .b_a              Accelerometer biases (m/s^2)
 %     .b_g              Gyro biases (rad/s)
 %     .M_a              Accelerometer scale factor and cross coupling errors
-%     .M_g              Gyro scale factor and cross coupling errors            
-%     .G_g              Gyro g-dependent biases (rad-sec/m)             
+%     .M_g              Gyro scale factor and cross coupling errors
+%     .G_g              Gyro g-dependent biases (rad-sec/m)
 %     .accel_noise_root_PSD   Accelerometer noise root PSD (m s^-1.5)
 %     .gyro_noise_root_PSD    Gyro noise root PSD (rad s^-0.5)
 %     .accel_quant_level      Accelerometer quantization level (m/s^2)
@@ -111,8 +111,8 @@ for epoch = 2:no_epochs
         progress_epoch = epoch;
         fprintf(strcat(rewind,bars(1:progress_mark),...
             dots(1:(20 - progress_mark))));
-    end % if epoch    
-    
+    end % if epoch
+
     % Input data from motion profile
     time = in_profile(epoch,1);
     true_L_b = in_profile(epoch,2);
@@ -121,24 +121,24 @@ for epoch = 2:no_epochs
     true_v_eb_n = in_profile(epoch,5:7)';
     true_eul_nb = in_profile(epoch,8:10)';
     true_C_b_n = Euler_to_CTM(true_eul_nb)';
-   
+
     % Time interval
     tor_i = time - old_time;
-    
+
     % Calculate true specific force and angular rate
     [true_f_ib_b,true_omega_ib_b] = Kinematics_NED(tor_i,true_C_b_n,...
         old_true_C_b_n,true_v_eb_n,old_true_v_eb_n,true_L_b,true_h_b,...
         old_true_L_b,old_true_h_b);
-    
+
     % Simulate IMU errors
     [meas_f_ib_b,meas_omega_ib_b,quant_residuals] = IMU_model(tor_i,...
         true_f_ib_b,true_omega_ib_b,IMU_errors,quant_residuals);
-    
+
     % Update estimated navigation solution
     [est_L_b,est_lambda_b,est_h_b,est_v_eb_n,est_C_b_n] = ...
         Nav_equations_NED(tor_i,old_est_L_b,old_est_lambda_b,old_est_h_b,...
         old_est_v_eb_n,old_est_C_b_n,meas_f_ib_b,meas_omega_ib_b);
-   
+
     % Generate output profile record
     out_profile(epoch,1) = time;
     out_profile(epoch,2) = est_L_b;
@@ -146,7 +146,7 @@ for epoch = 2:no_epochs
     out_profile(epoch,4) = est_h_b;
     out_profile(epoch,5:7) = est_v_eb_n';
     out_profile(epoch,8:10) = CTM_to_Euler(est_C_b_n')';
-    
+
     % Determine errors and generate output record
     [delta_r_eb_n,delta_v_eb_n,delta_eul_nb_n] = Calculate_errors_NED(...
         est_L_b,est_lambda_b,est_h_b,est_v_eb_n,est_C_b_n,true_L_b,...
@@ -155,7 +155,7 @@ for epoch = 2:no_epochs
     out_errors(epoch,2:4) = delta_r_eb_n';
     out_errors(epoch,5:7) = delta_v_eb_n';
     out_errors(epoch,8:10) = delta_eul_nb_n';
-    
+
     % Reset old values
     old_time = time;
     old_true_L_b = true_L_b;
@@ -173,5 +173,5 @@ end %epoch
 
 % Complete progress bar
 fprintf(strcat(rewind,bars,'\n'));
-    
+
 % Ends

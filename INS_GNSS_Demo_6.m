@@ -39,15 +39,15 @@ IMU_errors.M_a = [100, -120,  80;...
 % body axes)
 IMU_errors.M_g = [8, -120, 100;...
                   0,   -6, -60;...
-                  0,    0,  -7] * 1E-6;             
+                  0,    0,  -7] * 1E-6;
 % Gyro g-dependent biases (deg/hour/g, converted to rad-sec/m; body axes)
 IMU_errors.G_g = [0, 0, 0;...
                   0, 0, 0;...
-                  0, 0, 0] * deg_to_rad / (3600 * 9.80665);             
-% Accelerometer noise root PSD (micro-g per root Hz, converted to m s^-1.5)                
+                  0, 0, 0] * deg_to_rad / (3600 * 9.80665);
+% Accelerometer noise root PSD (micro-g per root Hz, converted to m s^-1.5)
 IMU_errors.accel_noise_root_PSD = 20 *...
     micro_g_to_meters_per_second_squared;
-% Gyro noise root PSD (deg per root hour, converted to rad s^-0.5)                
+% Gyro noise root PSD (deg per root hour, converted to rad s^-0.5)
 IMU_errors.gyro_noise_root_PSD = 0.002 * deg_to_rad / 60;
 % Accelerometer quantization level (m/s^2)
 IMU_errors.accel_quant_level = 5E-5;
@@ -89,7 +89,7 @@ GNSS_config.rx_clock_offset = 10000;
 GNSS_config.rx_clock_drift = 100;
 
 % Initial attitude uncertainty per axis (deg, converted to rad)
-TC_KF_config.init_att_unc = degtorad(0.01);
+TC_KF_config.init_att_unc = 0.01 * pi / 180;   % deg to rad
 % Initial velocity uncertainty per axis (m/s)
 TC_KF_config.init_vel_unc = 0.1;
 % Initial position uncertainty per axis (m)
@@ -104,9 +104,9 @@ TC_KF_config.init_clock_offset_unc = 10;
 % Initial clock drift uncertainty per axis (m/s)
 TC_KF_config.init_clock_drift_unc = 0.1;
 
-% Gyro noise PSD (deg^2 per hour, converted to rad^2/s)                
+% Gyro noise PSD (deg^2 per hour, converted to rad^2/s)
 TC_KF_config.gyro_noise_PSD = (0.004 * deg_to_rad / 60)^2;
-% Accelerometer noise PSD (micro-g^2 per Hz, converted to m^2 s^-3)                
+% Accelerometer noise PSD (micro-g^2 per Hz, converted to m^2 s^-3)
 TC_KF_config.accel_noise_PSD = (40 *...
     micro_g_to_meters_per_second_squared)^2;
 % Accelerometer bias random walk PSD (m^2 s^-5)
@@ -123,9 +123,9 @@ TC_KF_config.pseudo_range_SD = 2.5;
 % Pseudo-range rate measurement noise SD (m/s)
 TC_KF_config.range_rate_SD = 0.1;
 
-% Seeding of the random number generator for reproducability. Change 
+% Seeding of the random number generator for reproducability. Change
 % this value for a different random number sequence (may not work in Octave).
-RandStream.setDefaultStream(RandStream('mt19937ar','seed',1));
+RandStream.setGlobalStream(RandStream('mt19937ar','seed',1));
 
 % Begins
 

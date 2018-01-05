@@ -44,24 +44,24 @@ IMU_errors.M_a = [100, -120,  80;...
 % body axes)
 IMU_errors.M_g = [8, -120, 100;...
                   0,   -6, -60;...
-                  0,    0,  -7] * 1E-6;             
+                  0,    0,  -7] * 1E-6;
 % Gyro g-dependent biases (deg/hour/g, converted to rad-sec/m; body axes)
 IMU_errors.G_g = [0, 0, 0;...
                   0, 0, 0;...
-                  0, 0, 0] * deg_to_rad / (3600 * 9.80665);             
-% Accelerometer noise root PSD (micro-g per root Hz, converted to m s^-1.5)                
+                  0, 0, 0] * deg_to_rad / (3600 * 9.80665);
+% Accelerometer noise root PSD (micro-g per root Hz, converted to m s^-1.5)
 IMU_errors.accel_noise_root_PSD = 20 *...
     micro_g_to_meters_per_second_squared;
-% Gyro noise root PSD (deg per root hour, converted to rad s^-0.5)                
+% Gyro noise root PSD (deg per root hour, converted to rad s^-0.5)
 IMU_errors.gyro_noise_root_PSD = 0.002 * deg_to_rad / 60;
 % Accelerometer quantization level (m/s^2)
 IMU_errors.accel_quant_level = 5E-5;
 % Gyro quantization level (rad/s)
 IMU_errors.gyro_quant_level = 1E-6;
 
-% Seeding of the random number generator for reproducability. Change 
+% Seeding of the random number generator for reproducability. Change
 % this value for a different random number sequence (may not work in Octave).
-RandStream.setDefaultStream(RandStream('mt19937ar','seed',1));
+RandStream.setGlobalStream(RandStream('mt19937ar','seed',1));
 
 % Begins
 

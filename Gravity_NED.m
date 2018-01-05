@@ -1,5 +1,5 @@
 function g = Gravity_NED(L_b,h_b)
-%Gravity_ECEF - Calculates  acceleration due to gravity resolved about 
+%Gravity_ECEF - Calculates  acceleration due to gravity resolved about
 %north, east, and down
 %
 % Software for use with "Principles of GNSS, Inertial, and Multisensor
@@ -28,7 +28,7 @@ omega_ie = 7.292115E-5;  % Earth rotation rate (rad/s)
 
 % Calculate surface gravity using the Somigliana model, (2.134)
 sinsqL = sin(L_b)^2;
-g_0 = 9.7803253359 * (1 + 0.001931853 * sinsqL) / sqrt(1 - e^2 * sinsqL);
+g_0 = 9.7803253359 * (1 + 0.00193185265241 * sinsqL) / sqrt(1 - e^2 * sinsqL);
 
 % Calculate north gravity using (2.140)
 g(1,1) = -8.08E-9 * h_b * sin(2 * L_b);
