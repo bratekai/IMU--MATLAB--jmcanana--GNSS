@@ -147,8 +147,10 @@ function [out_profile,out_errors,out_IMU_bias_est,out_clock,out_KF_SD] =...
   micro_g_to_meters_per_second_squared = 9.80665E-6;
 
   %jsbSim streaming at 50Hz, the following caps the data history in the plot:
-  data_rate = 50;
-  seconds_of_data = data_rate * 300;
+  %data_rate = 50;
+  %seconds_of_data = data_rate * 300;
+  seconds_of_data = 500; %Currenly plotting on KF update only
+
 
 
   lever_arm = [0, 0, 0]'; %Lever arm to the GNSS aid [body xyz m], set to inject error.
@@ -282,6 +284,7 @@ function [out_profile,out_errors,out_IMU_bias_est,out_clock,out_KF_SD] =...
   % Open figure window
   f  = figure(1);
   f2 = figure(2);
+  f3 = figure(3);
 
   if 1%try
       while epoch <= no_epochs
@@ -462,6 +465,22 @@ function [out_profile,out_errors,out_IMU_bias_est,out_clock,out_KF_SD] =...
               ylabel('Velocity Error [m/s]');
               xlabel('Time (s)');
 
+
+              figure(f3);
+              clf
+              h_err_psi = animatedline(0, 0, ...
+                                    'Color','k','LineWidth',1, ...
+                                    'LineStyle', '-', ...
+                                    'Marker', '^', ...
+                                    'MarkerSize', 4, ...
+                                    'MaximumNumPoints', seconds_of_data);
+
+              title('INS Heading Errors');
+              legend('Error_Heading');
+              ylabel('Heading Error [rad]');
+              xlabel('Time (s)');
+
+
           else
               % Input data from motion profile
               time = in_profile(epoch, 1) - min_time;
@@ -572,13 +591,13 @@ function [out_profile,out_errors,out_IMU_bias_est,out_clock,out_KF_SD] =...
               old_est_C_b_e = est_C_b_e;
 
 
-              addpoints(h_truth, in_profile(epoch, 3) * rad_to_deg, ...
-                  in_profile(epoch, 2) * rad_to_deg);
-              addpoints(h_nav,  out_profile(epoch, 3) * rad_to_deg, ...
-                  out_profile(epoch, 2) * rad_to_deg);
-
-
               if  update_error_plot
+                  addpoints(h_truth, in_profile(epoch, 3) * rad_to_deg, ...
+                      in_profile(epoch, 2) * rad_to_deg);
+                  addpoints(h_nav,  out_profile(epoch, 3) * rad_to_deg, ...
+                      out_profile(epoch, 2) * rad_to_deg);
+
+
                   addpoints(h_err_pn, out_errors(epoch, 1), ...
                                                           out_errors(epoch, 2));
                   addpoints(h_err_pe, out_errors(epoch, 1), ...
@@ -590,6 +609,9 @@ function [out_profile,out_errors,out_IMU_bias_est,out_clock,out_KF_SD] =...
                   addpoints(h_err_ve, out_errors(epoch, 1), ...
                                                           out_errors(epoch, 6));
                   addpoints(h_err_vd, out_errors(epoch, 1), ...
+                                                          out_errors(epoch, 7));
+
+                  addpoints(h_err_psi, out_errors(epoch, 1), ...
                                                           out_errors(epoch, 7));
 
               end
@@ -605,6 +627,7 @@ function [out_profile,out_errors,out_IMU_bias_est,out_clock,out_KF_SD] =...
   pnet(udp,'close');
   delete(f);
   delete(f2);
+  delete(f3);
   return;
 
 
