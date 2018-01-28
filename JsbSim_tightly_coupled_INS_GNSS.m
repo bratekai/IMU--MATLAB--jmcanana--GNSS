@@ -295,6 +295,7 @@ function [out_profile,out_errors,out_IMU_bias_est,out_clock,out_KF_SD] =...
   % Open figure window
   f  = figure(1);
   f2 = figure(2);
+  f3 = figure(3);
 
   if 1%try
       while epoch <= no_epochs
@@ -353,6 +354,9 @@ function [out_profile,out_errors,out_IMU_bias_est,out_clock,out_KF_SD] =...
               [temp1,temp2,old_est_C_b_e] = NED_to_ECEF(old_est_L_b,...
                   old_est_lambda_b,old_est_h_b,old_est_v_eb_n,old_est_C_b_n);
 
+              % Initialize output profile record and errors record
+              out_profile = zeros(no_epochs,10);
+              out_errors = zeros(no_epochs,10);
 
               % Generate output profile record
               out_profile(1,1) = old_time;
@@ -469,6 +473,21 @@ function [out_profile,out_errors,out_IMU_bias_est,out_clock,out_KF_SD] =...
               xlabel('Time (s)');
 
 
+              figure(f3);
+              clf
+              h_err_psi = animatedline(0, 0, ...
+                                    'Color','k','LineWidth',1, ...
+                                    'LineStyle', '-', ...
+                                    'Marker', '^', ...
+                                    'MarkerSize', 4, ...
+                                    'MaximumNumPoints', seconds_of_data);
+
+              title('INS Heading Errors');
+              legend('Error_{Heading}');
+              ylabel('Heading Error [mrad]');
+              xlabel('Time (s)');
+
+
           else
               % Input data from motion profile
               time = in_profile(epoch, 1) - min_time;
@@ -578,13 +597,14 @@ function [out_profile,out_errors,out_IMU_bias_est,out_clock,out_KF_SD] =...
               old_est_v_eb_e = est_v_eb_e;
               old_est_C_b_e = est_C_b_e;
 
-              addpoints(h_truth, in_profile(epoch, 3) * rad_to_deg, ...
-                  in_profile(epoch, 2) * rad_to_deg);
-              addpoints(h_nav,  out_profile(epoch, 3) * rad_to_deg, ...
-                  out_profile(epoch, 2) * rad_to_deg);
-
 
               if  update_error_plot
+                  addpoints(h_truth, in_profile(epoch, 3) * rad_to_deg, ...
+                      in_profile(epoch, 2) * rad_to_deg);
+                  addpoints(h_nav,  out_profile(epoch, 3) * rad_to_deg, ...
+                      out_profile(epoch, 2) * rad_to_deg);
+
+
                   addpoints(h_err_pn, out_errors(epoch, 1), ...
                                                           out_errors(epoch, 2));
                   addpoints(h_err_pe, out_errors(epoch, 1), ...
@@ -597,6 +617,10 @@ function [out_profile,out_errors,out_IMU_bias_est,out_clock,out_KF_SD] =...
                                                           out_errors(epoch, 6));
                   addpoints(h_err_vd, out_errors(epoch, 1), ...
                                                           out_errors(epoch, 7));
+
+                  addpoints(h_err_psi, out_errors(epoch, 1), ...
+                                                          out_errors(epoch, 10) * 10^3);
+
 
               end
 
@@ -611,6 +635,9 @@ function [out_profile,out_errors,out_IMU_bias_est,out_clock,out_KF_SD] =...
   pnet(udp,'close');
   delete(f);
   delete(f2);
+  delete(f3);
   return;
+
+
 
 % Ends

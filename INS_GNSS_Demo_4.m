@@ -39,15 +39,15 @@ IMU_errors.M_a = [500, -300, 200;...
 % body axes)
 IMU_errors.M_g = [400, -300,  250;...
                     0, -300, -150;...
-                    0,    0, -350] * 1E-6;             
+                    0,    0, -350] * 1E-6;
 % Gyro g-dependent biases (deg/hour/g, converted to rad-sec/m; body axes)
 IMU_errors.G_g = [0.9, -1.1, -0.6;...
                  -0.5,  1.9, -1.6;...
-                  0.3,  1.1, -1.3] * deg_to_rad / (3600 * 9.80665);             
-% Accelerometer noise root PSD (micro-g per root Hz, converted to m s^-1.5)                
+                  0.3,  1.1, -1.3] * deg_to_rad / (3600 * 9.80665);
+% Accelerometer noise root PSD (micro-g per root Hz, converted to m s^-1.5)
 IMU_errors.accel_noise_root_PSD = 100 *...
     micro_g_to_meters_per_second_squared;
-% Gyro noise root PSD (deg per root hour, converted to rad s^-0.5)                
+% Gyro noise root PSD (deg per root hour, converted to rad s^-0.5)
 IMU_errors.gyro_noise_root_PSD = 0.01 * deg_to_rad / 60;
 % Accelerometer quantization level (m/s^2)
 IMU_errors.accel_quant_level = 1E-2;
@@ -100,9 +100,9 @@ LC_KF_config.init_b_a_unc = 1000 * micro_g_to_meters_per_second_squared;
 % Initial gyro bias uncertainty per instrument (deg/hour, converted to rad/sec)
 LC_KF_config.init_b_g_unc = 10 * deg_to_rad / 3600;
 
-% Gyro noise PSD (deg^2 per hour, converted to rad^2/s)                
+% Gyro noise PSD (deg^2 per hour, converted to rad^2/s)
 LC_KF_config.gyro_noise_PSD = (0.02 * deg_to_rad / 60)^2;
-% Accelerometer noise PSD (micro-g^2 per Hz, converted to m^2 s^-3)                
+% Accelerometer noise PSD (micro-g^2 per Hz, converted to m^2 s^-3)
 LC_KF_config.accel_noise_PSD = (200 *...
     micro_g_to_meters_per_second_squared)^2;
 % Accelerometer bias random walk PSD (m^2 s^-5)
@@ -115,9 +115,9 @@ LC_KF_config.pos_meas_SD = 2.5;
 % Velocity measurement noise SD per axis (m/s)
 LC_KF_config.vel_meas_SD = 0.1;
 
-% Seeding of the random number generator for reproducability. Change 
+% Seeding of the random number generator for reproducability. Change
 % this value for a different random number sequence (may not work in Octave).
-RandStream.setDefaultStream(RandStream('mt19937ar','seed',1));
+  RandStream.setGlobalStream(RandStream('mt19937ar','seed',1));
 
 % Begins
 

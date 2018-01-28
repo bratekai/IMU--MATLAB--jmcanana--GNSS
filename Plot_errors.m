@@ -83,9 +83,10 @@ set(gca,'OuterPosition',[0.34,0,0.32,0.35]);
 subplot(3,3,9);
 set(gca,'NextPlot','replacechildren');
 set(gca,'ColorOrder',[0.7,0.7,0]);
-plot(errors(:,1),radtodeg(errors(:,10)),'LineWidth',1.5);
+%plot(errors(:,1),radtodeg(errors(:,10)),'LineWidth',1.5);
+plot(errors(:,1),errors(:,10),'LineWidth',1.5);
 xlabel('Time, s');
-title('Heading error, deg');
+title('Heading error, rad');
 set(gca,'OuterPosition',[0.67,0,0.32,0.35]);
 
 % Ends
