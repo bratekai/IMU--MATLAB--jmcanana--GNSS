@@ -623,6 +623,9 @@ function [out_profile,out_errors,out_IMU_bias_est,out_clock,out_KF_SD] =...
           end %if init_nav
           dlmwrite(output_errors_name,out_errors,'-append', 'newline','unix', ...
                                                   'precision',12);
+          dlmwrite(output_profile_name,out_profile,'-append', 'newline','unix', ...
+                                                  'precision',12);
+
       end %while loop
   end %try
   % On break or error close udpconnection and figure window.
